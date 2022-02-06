@@ -87,7 +87,7 @@ def evaluate(preds, golds):
     
 def main():
     baseline()
-    baseline_biased()
+    # baseline_biased()
     
 if __name__ == "__main__":
     main()

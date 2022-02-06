@@ -3,3 +3,4 @@ scikit-learn
 simpletransformers
 tensorboardx
 tensorflow
+torch
