@@ -14,7 +14,10 @@ def baseline():
     
     pcldf = train_df[train_df.label==1]
     npos = len(pcldf)
-    logger.info(f"positive samples = {npos}; negetive samples = {len(train_df) - npos}")
+    logger.info(f"Training set: positive samples = {npos}; negetive samples = {len(train_df) - npos}")
+    
+    test_npos = len(test_df[test_df.label==1])
+    logger.info(f"Test set: positive samples = {test_npos}; negetive samples = {len(test_df) - test_npos}")
 
     downsampled_training_set = pd.concat([pcldf,train_df[train_df.label==0][:npos*2]])
     pcldf = downsampled_training_set[downsampled_training_set.label==1]
@@ -52,10 +55,9 @@ def baseline_biased():
     pcldf = train_df[train_df.label==1]
     npos = len(pcldf)
     logger.info(f"positive samples = {npos}; negetive samples = {len(train_df) - npos}")
-
-    # downsampled_training_set = pd.concat([pcldf,train_df[train_df.label==0][:npos*2]])
-    # pcldf = downsampled_training_set[downsampled_training_set.label==1]
-    # logger.info(f"After downsampling: positive samples =  {len(pcldf)}; negetive samples = {len(downsampled_training_set) - len(pcldf)}")
+    
+    test_npos = len(test_df[test_df.label==1])
+    logger.info(f"Test set: positive samples = {test_npos}; negetive samples = {len(test_df) - test_npos}")
     
     cuda_available = torch.cuda.is_available()
     logger.info(f"Cuda available? {cuda_available}")
