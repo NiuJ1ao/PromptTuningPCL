@@ -1,4 +1,5 @@
 from dont_patronize_me import DontPatronizeMe
+import logger as logging
 from logger import logger
 import pandas as pd
 
@@ -38,4 +39,29 @@ def load_data():
     dpm = load_task1()
     train_ids, test_ids = load_paragraph_ids()
     return rebuild_data_set(dpm, train_ids), rebuild_data_set(dpm, test_ids)
+
+def save_sentences_and_labels(sentences, labels, filename):
+    with open(filename, 'w') as f:
+        logger.info(f"Saving {len(sentences)} pairs to {filename}")
+        for sentence, label in zip(sentences, labels):
+            f.write(f'{sentence}\t{label}\n')
+            
+def save_raw_sentences(sentences, filename):
+    with open(filename, 'w') as f:
+        logger.info(f"Saving {len(sentences)} sentences to {filename}")
+        for snt in sentences:
+            f.write(f'{snt}\n')
+            
+if __name__ == "__main__":
+    logging.init_logger()
+    train_data, test_data = load_data()
     
+    texts = train_data['text'].astype(str).values.tolist()
+    save_raw_sentences(texts, 'data/raw_sentences_train.txt')
+    labels = train_data['label'].astype(str).values.tolist()
+    save_sentences_and_labels(texts, labels, "data/sentences_and_labels_train.txt")
+    
+    texts = test_data['text'].astype(str).values.tolist()
+    save_raw_sentences(texts, 'data/raw_sentences_test.txt')
+    labels = test_data['label'].astype(str).values.tolist()
+    save_sentences_and_labels(texts, labels, "data/sentences_and_labels_test.txt")
