@@ -4,3 +4,4 @@ simpletransformers
 tensorboardx
 tensorflow
 torch
+numpy
