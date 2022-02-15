@@ -1,7 +1,29 @@
 from dont_patronize_me import DontPatronizeMe
+from torch.utils.data import Dataset
 import logger as logging
 from logger import logger
 import pandas as pd
+
+class PCLDataset(Dataset):
+    def __init__(self, dataset="train"):
+        # get data
+        if dataset == "train":
+            df, _ = load_data()
+        # elif dataset == "eval":
+        elif dataset == "test":
+            _, df = load_data()
+        else:
+            assert False
+        
+        self.sentences = df.text.astype(str).values.tolist()
+        self.labels = df.label.astype(int).values.tolist()
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        return self.sentences[idx], self.labels[idx]    
+
 
 def load_task1():
     '''
