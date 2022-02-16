@@ -1,0 +1,24 @@
+{
+    "os": "Linux-5.13.0-28-generic-x86_64-with-glibc2.10",
+    "python": "3.8.0",
+    "heartbeatAt": "2022-02-16T00:34:58.109097",
+    "startedAt": "2022-02-16T00:34:54.948964",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_count": 1,
+    "cpu_count": 36,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "train.py",
+    "codePath": "train.py",
+    "git": {
+        "remote": "git@github.com:NiuJ1ao/IC-NLP-coursework.git",
+        "commit": "00748a87b64326bfbc8f252e4091d88c96537852"
+    },
+    "email": "yuchen.niu21@imperial.ac.uk",
+    "root": "/home/ycniu/IC/IC-NLP-coursework",
+    "host": "ycniu-desktop",
+    "username": "ycniu",
+    "executable": "/home/ycniu/anaconda3/envs/ic-nlp/bin/python"
+}
