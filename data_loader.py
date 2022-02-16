@@ -5,24 +5,13 @@ from logger import logger
 import pandas as pd
 
 class PCLDataset(torch.utils.data.Dataset):
-    def __init__(self, tokenizer, dataset="train", is_augment=True):
+    def __init__(self, tokenizer, dataset="train"):
         # get data
         if dataset == "train":
             df, _ = load_data()
-            
-            if is_augment:
-                dpm = DontPatronizeMe('data', '')
-                dpm.load_task1(file_name="augment_positive.tsv")
-                augments = dpm.train_task1_df
-                logger.info(f"Augmented positive data size: {len(augments)}")
-                df = pd.concat([df, augments])
-            
-                        
-            # # Downsampling
-            # pcldf = df[df.label==1]
-            # negdf = df[df.label==0]
-            # negdf = negdf.sample(frac=0.5, replace=False, random_state=1)
-            # df = pd.concat([pcldf, negdf])
+            pcldf = df[df.label==1]
+            npos = len(pcldf)
+            df = pd.concat([pcldf, df[df.label==0][:npos*2]])
         # elif dataset == "eval":
         elif dataset == "test":
             _, df = load_data()
@@ -31,7 +20,8 @@ class PCLDataset(torch.utils.data.Dataset):
             
         logger.info(f"Dataset {dataset}: Positive data size = {len(df[df.label==1])}; Negetive data size = {len(df[df.label==0])}")
         
-        self.snts = df.text.astype(str).values.tolist()
+        # self.snts = df.text.astype(str).values.tolist()
+        self.encodings = tokenizer(df.text.astype(str).values.tolist(), truncation=True, padding=True, return_tensors="pt")
         self.labels = df.label.astype(int).values.tolist()
         self.encodings = tokenizer(self.snts, truncation=True, padding=True, return_tensors="pt")
         
@@ -42,6 +32,8 @@ class PCLDataset(torch.utils.data.Dataset):
         item = {key: val[idx].clone().detach() for key, val in self.encodings.items()}
         item['labels'] = torch.tensor(self.labels[idx])
         return item
+        # return self.snts[idx], self.labels[idx]
+
 
 def load_task1():
     '''

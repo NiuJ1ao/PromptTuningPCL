@@ -132,5 +132,3 @@ runs/
 outputs/
 
 wandb/
-models/
-best_models/
