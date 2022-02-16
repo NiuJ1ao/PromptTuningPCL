@@ -1,28 +1,35 @@
 from dont_patronize_me import DontPatronizeMe
-from torch.utils.data import Dataset
+import torch
 import logger as logging
 from logger import logger
 import pandas as pd
 
-class PCLDataset(Dataset):
-    def __init__(self, dataset="train"):
+class PCLDataset(torch.utils.data.Dataset):
+    def __init__(self, tokenizer, dataset="train"):
         # get data
         if dataset == "train":
             df, _ = load_data()
+            pcldf = df[df.label==1]
+            npos = len(pcldf)
+            df = pd.concat([pcldf, df[df.label==0][:npos*2]])
         # elif dataset == "eval":
         elif dataset == "test":
             _, df = load_data()
         else:
             assert False
         
-        self.sentences = df.text.astype(str).values.tolist()
+        # self.snts = df.text.astype(str).values.tolist()
+        self.encodings = tokenizer(df.text.astype(str).values.tolist(), truncation=True, padding=True, return_tensors="pt")
         self.labels = df.label.astype(int).values.tolist()
 
     def __len__(self):
         return len(self.labels)
 
     def __getitem__(self, idx):
-        return self.sentences[idx], self.labels[idx]    
+        item = {key: val[idx].clone().detach() for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor(self.labels[idx])
+        return item
+        # return self.snts[idx], self.labels[idx]
 
 
 def load_task1():
