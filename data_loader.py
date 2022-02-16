@@ -5,23 +5,36 @@ from logger import logger
 import pandas as pd
 
 class PCLDataset(torch.utils.data.Dataset):
-    def __init__(self, tokenizer, dataset="train"):
+    def __init__(self, tokenizer, dataset="train", is_augment=True):
         # get data
         if dataset == "train":
             df, _ = load_data()
-            pcldf = df[df.label==1]
-            npos = len(pcldf)
-            df = pd.concat([pcldf, df[df.label==0][:npos*2]])
+            
+            if is_augment:
+                dpm = DontPatronizeMe('data', '')
+                dpm.load_task1(file_name="augment_positive.tsv")
+                augments = dpm.train_task1_df
+                logger.info(f"Augmented positive data size: {len(augments)}")
+                df = pd.concat([df, augments])
+            
+                        
+            # # Downsampling
+            # pcldf = df[df.label==1]
+            # negdf = df[df.label==0]
+            # negdf = negdf.sample(frac=0.5, replace=False, random_state=1)
+            # df = pd.concat([pcldf, negdf])
         # elif dataset == "eval":
         elif dataset == "test":
             _, df = load_data()
         else:
             assert False
+            
+        logger.info(f"Dataset {dataset}: Positive data size = {len(df[df.label==1])}; Negetive data size = {len(df[df.label==0])}")
         
-        # self.snts = df.text.astype(str).values.tolist()
-        self.encodings = tokenizer(df.text.astype(str).values.tolist(), truncation=True, padding=True, return_tensors="pt")
+        self.snts = df.text.astype(str).values.tolist()
         self.labels = df.label.astype(int).values.tolist()
-
+        self.encodings = tokenizer(self.snts, truncation=True, padding=True, return_tensors="pt")
+        
     def __len__(self):
         return len(self.labels)
 
@@ -29,16 +42,14 @@ class PCLDataset(torch.utils.data.Dataset):
         item = {key: val[idx].clone().detach() for key, val in self.encodings.items()}
         item['labels'] = torch.tensor(self.labels[idx])
         return item
-        # return self.snts[idx], self.labels[idx]
-
 
 def load_task1():
     '''
     return a pandas dataframe with paragraphs and labels
     '''
-    dpm = DontPatronizeMe('data', 'dontpatronizeme_pcl.tsv')
+    dpm = DontPatronizeMe('data', '')
     dpm.load_task1()
-    logger.info(f"task1 loaded ({dpm.train_task1_df.shape[0]} rows, {dpm.train_task1_df.shape[1]} columns)")
+    logger.info(f"Task1 loaded ({dpm.train_task1_df.shape[0]} rows, {dpm.train_task1_df.shape[1]} columns)")
     return dpm.train_task1_df
 
 def load_paragraph_ids():
@@ -46,7 +57,7 @@ def load_paragraph_ids():
     test_ids = pd.read_csv('data/dev_semeval_parids-labels.csv')
     train_ids.par_id = train_ids.par_id.astype(str)
     test_ids.par_id = test_ids.par_id.astype(str)
-    logger.info(f"training data size: {len(train_ids)}; test data size: {len(test_ids)}")
+    logger.info(f"Training data size: {len(train_ids)}; test data size: {len(test_ids)}")
     return train_ids, test_ids
     
 def rebuild_dataset(dpm, ids):
