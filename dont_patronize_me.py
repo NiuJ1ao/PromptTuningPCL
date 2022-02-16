@@ -13,7 +13,7 @@ class DontPatronizeMe:
 		self.train_task2_df = None
 		self.test_set_df = None
 
-	def load_task1(self):
+	def load_task1(self, file_name='dontpatronizeme_pcl.tsv'):
 		"""
 		Load task 1 training set and convert the tags into binary labels. 
 		Paragraphs with original labels of 0 or 1 are considered to be negative examples of PCL and will have the label 0 = negative.
@@ -21,7 +21,7 @@ class DontPatronizeMe:
 		It returns a pandas dataframe with paragraphs and labels.
 		"""
 		rows=[]
-		with open(os.path.join(self.train_path, 'dontpatronizeme_pcl.tsv')) as f:
+		with open(os.path.join(self.train_path, file_name)) as f:
 			for line in f.readlines()[4:]:
 				par_id=line.strip().split('\t')[0]
 				art_id = line.strip().split('\t')[1]
