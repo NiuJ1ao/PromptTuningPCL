@@ -1,5 +1,4 @@
 import os
-import torch
 import numpy as np
 from logger import logger
 import logger as logging
