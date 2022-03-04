@@ -4,6 +4,7 @@
 ```
 pip install -r requirements.txt
 ```
+If some packages are still missing, please use ```pip install <package_name>```
 
 ## Baseline
 ```

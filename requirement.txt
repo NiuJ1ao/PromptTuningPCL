@@ -7,3 +7,4 @@ torch
 numpy
 kornia
 openprompt
+transformers

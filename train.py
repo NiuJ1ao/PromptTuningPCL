@@ -21,12 +21,12 @@ metric_recall = load_metric("recall")
 def bart_compute_metrics(eval_pred):
     (logits, _), labels = eval_pred
     predictions = np.argmax(logits, axis=-1)
-    return metric.compute(predictions=predictions, references=labels)
+    return metric_f1.compute(predictions=predictions, references=labels)
 
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
     predictions = np.argmax(logits, axis=-1)
-    return metric.compute(predictions=predictions, references=labels)
+    return metric_f1.compute(predictions=predictions, references=labels)
 
 
 def train():
@@ -80,13 +80,13 @@ def train():
     os.environ["WANDB_DISABLED"] = "true"
     trainer.train()
 
-    outputs = trainer.predict(test_data)
-    label_ids = outputs.label_ids
-    logits, _ = outputs.predictions
-    # logits = outputs.predictions
+    # outputs = trainer.predict(test_data)
+    # label_ids = outputs.label_ids
+    # logits, _ = outputs.predictions
+    # # logits = outputs.predictions
 
-    preds = np.argmax(logits, axis=-1)
-    f1 = metric.compute(predictions=preds, references=label_ids)["f1"]
+    # preds = np.argmax(logits, axis=-1)
+    # f1 = metric_f1.compute(predictions=preds, references=label_ids)["f1"]
 
     # with open(f"predictions/bart_large_{f1:.2f}.txt", 'w') as f:
     #     for pi in preds:
