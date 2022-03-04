@@ -1,4 +1,4 @@
-# Prompt-tuning in Condescending Detection
+# Prompt-tuning for Condescending Detection
 
 ## Additional Requirements
 - [OpenPrompt](https://github.com/NiuJ1ao/OpenPrompt) (Not official version)
