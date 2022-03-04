@@ -1,7 +1,11 @@
 # Prompt-tuning in Condescending Detection
 
-## Requirements
-- [OpenPrompt](https://github.com/NiuJ1ao/OpenPrompt)
+## Additional Requirements
+- [OpenPrompt](https://github.com/NiuJ1ao/OpenPrompt) (Not official version)
+```
+bash setup_openprompt.sh
+```
+If some packages are still missing, please use ```pip install <package_name>```
 
 ## Prompt-Tuning
 ### Train

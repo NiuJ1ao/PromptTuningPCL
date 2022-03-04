@@ -1,21 +1,13 @@
 import os
-import torch
 import numpy as np
-import random
-import torch
 from logger import logger
 import logger as logging
-from util import seed_everything
+from util import seed_everything, metric_recall, metric_precision, metric_f1
 from data_loader import PCLDataset
-from datasets import load_metric
 from transformers import EarlyStoppingCallback, TrainingArguments, Trainer
 from transformers import BartTokenizer, BartForSequenceClassification
 from transformers import RobertaTokenizer, RobertaForSequenceClassification
 from model import MyTrainer, RoBERTa_PCL
-
-metric_f1 = load_metric("f1")
-metric_precision = load_metric("precision")
-metric_recall = load_metric("recall")
 
 
 def bart_compute_metrics(eval_pred):
@@ -30,8 +22,8 @@ def compute_metrics(eval_pred):
 
 
 def train():
-    # hyperparameters
-    exp_name = "bart_large_paraphrases_test"
+    ################ hyperparameters ###############
+    exp_name = "bart_large_paraphrases"
     batch_size = 32
     num_epochs = 20
     weight_decay = 0.01
@@ -40,6 +32,7 @@ def train():
     max_seq_length = 128
     early_stop = 5
     eval_steps = 327
+    ################################################
     
     tokenizer = BartTokenizer.from_pretrained("facebook/bart-large")
     model = BartForSequenceClassification.from_pretrained("facebook/bart-large", num_labels=2)

@@ -3,8 +3,7 @@ scikit-learn
 simpletransformers
 tensorboardx
 tensorflow
-torch
 numpy
 kornia
-openprompt
 transformers
+tqdm

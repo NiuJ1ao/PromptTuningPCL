@@ -2,6 +2,11 @@ from urllib import request
 import random, os
 import numpy as np
 import torch
+from datasets import load_metric
+
+metric_f1 = load_metric("f1")
+metric_precision = load_metric("precision")
+metric_recall = load_metric("recall")
 
 def pull_data_manager():
     module_url = f"https://raw.githubusercontent.com/Perez-AlmendrosC/dontpatronizeme/master/semeval-2022/dont_patronize_me.py"

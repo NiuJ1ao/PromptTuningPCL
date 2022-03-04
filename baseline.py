@@ -1,7 +1,6 @@
 import os
 import random
 import numpy as np
-
 import logger as logging
 from logger import logger
 from data_loader import load_data
@@ -9,8 +8,7 @@ import pandas as pd
 from simpletransformers.classification import ClassificationModel, ClassificationArgs
 import torch
 from collections import Counter
-import util
-from sklearn.metrics import f1_score
+from util import metric_f1, metric_precision, metric_recall, seed_everything
 
 def baseline():
     logging.init_logger(log_level=logging.INFO)
@@ -47,10 +45,9 @@ def baseline():
     logger.info(f"Prediction distribution: {Counter(preds_task1)}")
     
     # evaluate
-    f1_score = evaluate(preds_task1, test_df.label.tolist())
-    logger.info(f"F1 score: {f1_score}")
+    evaluate(preds_task1, test_df.label.tolist())
     
-    util.labels2file([[k] for k in preds_task1], f"predictions/baseline_{f1_score}.txt")
+    # util.labels2file([[k] for k in preds_task1], f"predictions/baseline_{f1_score}.txt")
     
 def baseline_biased():
     logging.init_logger(log_level=logging.INFO)
@@ -83,16 +80,18 @@ def baseline_biased():
     logger.info(f"Prediction distribution: {Counter(preds_task1)}")
     
     # evaluate
-    f1_score = evaluate(preds_task1, test_df.label.tolist())
-    logger.info(f"F1 score: {f1_score}")
+    evaluate(preds_task1, test_df.label.tolist())
     
-    util.labels2file([[k] for k in preds_task1], f"predictions/baseline_biased_{f1_score}.txt")
+    # util.labels2file([[k] for k in preds_task1], f"predictions/baseline_biased_{f1_score}.txt")
     
 def evaluate(preds, golds):
-    return f1_score(golds, preds, average='binary')
+    f1 = metric_f1.compute(predictions=preds, references=golds)["f1"]
+    precision = metric_precision.compute(predictions=preds, references=golds)["precision"]
+    recall = metric_recall.compute(predictions=preds, references=golds)["recall"]
+    logger.info(f"F1: {f1}; Precision: {precision}; Recall: {recall}")
     
 def main():
-    util.seed_everything(42)
+    seed_everything(42)
     baseline()
     # baseline_biased()
     

@@ -1,6 +1,8 @@
 # Prompt Tuning in Condescending Detection
 
 ## Requirements
+- [Pytorch](https://pytorch.org/get-started/locally/) please select the correct CUDA version matched your GPU.
+- other requirements
 ```
 pip install -r requirements.txt
 ```

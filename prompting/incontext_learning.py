@@ -13,24 +13,13 @@ from openprompt import PromptDataLoader, PromptForClassification
 from tqdm import tqdm
 from transformers import AdamW, get_scheduler
 from torch.nn import CrossEntropyLoss
-from sklearn.utils import class_weight
 from prompting.util import merge_augments, downsampling, seed_everything, load_references
 from prompting.util import metric_f1, metric_precision, metric_recall
 from prompting.util import IncontextUtil
     
 def train(seed):
-    # # hyperparameters
-    # batch_size = 10
-    # num_epochs = 20
-    # weight_decay = 1e-2
-    # warmup_ratio = 0.1
-    # warmup_steps = 500
-    # lr = 1e-5
-    # max_seq_length = 512
-    # early_stop_steps = 10
-    # model_name = "bart"
-    
-    exp_name = "fewshot-4000-demonstrator-5epochs-1"
+    ################ hyperparameters ###############
+    exp_name = "fewshot-4000-demonstrator-5epochs"
     train_batch_size = 4
     val_batch_size = 4
     # total_train_steps = 5000
@@ -59,6 +48,7 @@ def train(seed):
     # num_examples_per_label = 500
     # model_name = "bart"
     # model_path = "facebook/bart-large"
+    ################################################
     
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     
@@ -158,6 +148,8 @@ def train(seed):
     
     progress_bar = tqdm(range(num_training_steps))
     best_f1 = 0
+    best_recall = 0
+    best_precision = 0
     early_stop_steps = 0
     # num_epochs = num_training_steps // len(train_dataloader)
     train_steps = 0
@@ -196,6 +188,8 @@ def train(seed):
         if best_f1 < f1:
             torch.save(model.state_dict(), f"{exp_name}/{model_name}_{seed}_{lr}_{epoch}_{f1:.2f}_{precision:.2f}_{recall:.2f}.pt")
             best_f1 = f1
+            best_recall = recall
+            best_precision = precision
             early_stop_steps = 0
         else:
             early_stop_steps += 1
@@ -203,10 +197,11 @@ def train(seed):
                 logger.info(f"Early stop at epoch {epoch}")
                 break
             
+    logger.info(f"Final Result: F1 = {best_f1}, Precision = {best_recall}, Recall = {best_precision}")
 
 if __name__ == "__main__":
     logging.init_logger()
-    seeds = [100] # [13, 21, 42, 87, 100]
+    seeds = [13, 21, 42, 87, 100]
     for seed in seeds:
         seed_everything(seed)
         train(seed)
