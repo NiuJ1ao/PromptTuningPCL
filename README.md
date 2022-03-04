@@ -1,4 +1,4 @@
-# Prompt Tuning in Condescending Detection
+# Prompt Tuning for Condescending Detection
 
 ## Requirements
 ```
