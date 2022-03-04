@@ -1,4 +1,4 @@
-# IC-NLP-coursework
+# Prompt Tuning in Condescending Detection
 
 ## Requirements
 ```
