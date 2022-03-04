@@ -26,7 +26,6 @@ class PCLDataset(torch.utils.data.Dataset):
                 pcldf = df[df.label==1]
                 npos = len(pcldf)
                 df = pd.concat([pcldf, df[df.label==0][:npos*2]])
-        # elif dataset == "eval":
         elif dataset == "test":
             # _, df = load_data()
             dpm = DontPatronizeMe('data', '')
@@ -45,27 +44,10 @@ class PCLDataset(torch.utils.data.Dataset):
         self.labels = df.label.astype(int).values.tolist()
         self.encodings = self.tokenizer(self.snts, return_tensors='pt', padding=True, truncation=True, max_length=max_length)
         
-    # def collate_fn(self, batch):
-
-    #     texts = []
-    #     labels = []
-
-    #     for b in batch:
-    #         texts.append(b['text'])
-    #         labels.append(b['label'])
-
-    #     encodings = self.tokenizer(texts, return_tensors='pt', padding=True, truncation=True, max_length=128)
-    #     encodings['label'] = torch.tensor(labels)
-        
-    #     return encodings
-        
     def __len__(self):
         return len(self.labels)
 
     def __getitem__(self, idx):
-        # item = {'text': self.snts[idx],
-        #         'label': self.labels[idx]}
-        # return item
         item = {key: val[idx].clone().detach() for key, val in self.encodings.items()}
         item['labels'] = torch.tensor(self.labels[idx])
         return item

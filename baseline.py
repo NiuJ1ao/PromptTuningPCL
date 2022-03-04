@@ -1,3 +1,7 @@
+import os
+import random
+import numpy as np
+
 import logger as logging
 from logger import logger
 from data_loader import load_data
@@ -88,6 +92,7 @@ def evaluate(preds, golds):
     return f1_score(golds, preds, average='binary')
     
 def main():
+    util.seed_everything(42)
     baseline()
     # baseline_biased()
     

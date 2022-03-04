@@ -5,7 +5,7 @@ import random
 import torch
 from logger import logger
 import logger as logging
-from collections import Counter
+from util import seed_everything
 from data_loader import PCLDataset
 from datasets import load_metric
 from transformers import EarlyStoppingCallback, TrainingArguments, Trainer
@@ -31,7 +31,7 @@ def compute_metrics(eval_pred):
 
 def train():
     # hyperparameters
-    exp_name = "bart_large_paraphrases_2"
+    exp_name = "bart_large_paraphrases_test"
     batch_size = 32
     num_epochs = 20
     weight_decay = 0.01
@@ -80,28 +80,21 @@ def train():
     os.environ["WANDB_DISABLED"] = "true"
     trainer.train()
 
-    # outputs = trainer.predict(test_data)
-    # label_ids = outputs.label_ids
-    # logits, _ = outputs.predictions
-    # # logits = outputs.predictions
+    outputs = trainer.predict(test_data)
+    label_ids = outputs.label_ids
+    logits, _ = outputs.predictions
+    # logits = outputs.predictions
 
-    # preds = np.argmax(logits, axis=-1)
-    # f1 = metric_f1.compute(predictions=preds, references=label_ids)["f1"]
+    preds = np.argmax(logits, axis=-1)
+    f1 = metric_f1.compute(predictions=preds, references=label_ids)["f1"]
+    precision = metric_precision.compute(predictions=preds, references=label_ids)["precision"]
+    recall = metric_recall.compute(predictions=preds, references=label_ids)["recall"]
+    logger.info(f"F1: {f1}; Precision: {precision}; Recall: {recall}")
 
     # with open(f"predictions/bart_large_{f1:.2f}.txt", 'w') as f:
     #     for pi in preds:
     #         f.write(f'{pi}\n')
-            
-            
-def seed_everything(seed: int):
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = True
-            
+ 
 if __name__ == "__main__":
     logging.init_logger()
     seed_everything(42)
