@@ -24,3 +24,6 @@ python evaluate.py
 ```
 python predict.py
 ```
+
+# Prompt-Tuning
+Please check [prompting folder](https://github.com/NiuJ1ao/PromptTuningPCL/tree/main/prompting)
