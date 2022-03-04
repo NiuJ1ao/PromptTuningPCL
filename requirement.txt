@@ -5,3 +5,5 @@ tensorboardx
 tensorflow
 torch
 numpy
+kornia
+openprompt

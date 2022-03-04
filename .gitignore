@@ -132,3 +132,9 @@ runs/
 outputs/
 
 wandb/
+models/
+best_models/
+bart*/
+prompt-*/
+fewshot-*/
+predictions/
