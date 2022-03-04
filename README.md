@@ -1,4 +1,4 @@
-# Prompt Tuning in Condescending Detection
+# Prompt Tuning for Condescending Detection
 
 ## Requirements
 - [Pytorch](https://pytorch.org/get-started/locally/) please select the correct CUDA version matched your GPU.
@@ -26,3 +26,6 @@ python evaluate.py
 ```
 python predict.py
 ```
+
+# Prompt-Tuning
+Please check [prompting folder](https://github.com/NiuJ1ao/PromptTuningPCL/tree/main/prompting)
